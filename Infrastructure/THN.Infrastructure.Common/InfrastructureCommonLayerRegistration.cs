@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using THN.Infrastructure.Common.EncyptHelper;
+using THN.Infrastructure.Common.Middleware;
 
 namespace THN.Infrastructure.Common
 {

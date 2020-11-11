@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using THN.Infrastructure.Common.JWT;
 
@@ -14,6 +13,19 @@ namespace THN.Infrastructure.Common.Middleware
             var options = new JwtOptions();
             var section = configuration.GetSection("jwt");
             section.Bind(options);
+            services.Configure<JwtOptions>(section);
+            services.AddSingleton<IJwtBuilder, JwtBuilder>();
+            services.AddAuthentication()
+            .AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Secret))
+                };
+            });
         }
     }
 }
